@@ -1,16 +1,17 @@
 IDIR = ./include
 CC = gcc
-CFLAGS = -I$(IDIR)
+CFLAGS = -I$(IDIR) -std=gnu99 -O3
+LDFLAGS = -L./lib
 ODIR = ./obj
 SDIR = ./src
-LIBS = -lm
+LIBS = -lm -l:raylibdll.lib -lopengl32 -lgdi32 -lwinmm
 
 
 
 ##################################################################
 
 _DEPS = 
-_OBJ = main.o
+_OBJ = main.o sim.o arena.o sized_string.o
 
 ##################################################################
 
@@ -29,7 +30,7 @@ $(ODIR):
 	mkdir $@
 
 fizyka: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -rf $(ODIR)/*.o fizyka *~ core $(IDIR)/*~
