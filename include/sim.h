@@ -17,9 +17,24 @@ typedef struct {
 DEFINE_ARRAY(PhysicalBody);
 
 typedef struct {
+    double x, y;
+} TrailPoint;
+
+typedef struct {
+    TrailPoint* points;
+    size_t capacity;
+    size_t head;
+    size_t count;
+} TrailBuffer;
+
+DEFINE_ARRAY(TrailBuffer);
+
+typedef struct {
     Arena* sim_arena;
     Array_PhysicalBody bodies;
+    Array_TrailBuffer trails;
     double time_seconds;
+    int trail_frame_counter;
 } SimContext;
 
 typedef long BodyId;
