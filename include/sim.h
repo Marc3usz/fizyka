@@ -44,5 +44,10 @@ void sim_reset(SimContext* sim);
 BodyId sim_add_body(SimContext* sim, PhysicalBody body);
 void sim_step(SimContext* sim, double dt_seconds);
 void sim_draw(const SimContext* sim, double cam_x, double cam_y, double zoom, int screen_w, int screen_h);
-
+BodyId sim_add_body_circular_orbit(SimContext* sim, BodyId parent_id,
+                                   double orbit_radius, double initial_angle,
+                                   double mass, float radius, Color color, const char* name);
+BodyId sim_add_body_elliptical_orbit(SimContext* sim, BodyId parent_id,
+                                     double periapsis, double apoapsis, double initial_angle,
+                                     double mass, float radius, Color color, const char* name);
 #endif
