@@ -3,6 +3,34 @@
 
 #include <stdio.h>
 
+typedef struct {
+    double elapsed_seconds;
+    bool running;
+} Timer;
+
+void timer_reset(Timer* timer) {
+    timer->elapsed_seconds = 0.0;
+    timer->running = false;
+}
+
+void timer_start(Timer* timer) {
+    timer->running = true;
+}
+
+void timer_pause(Timer* timer) {
+    timer->running = false;
+}
+
+void timer_toggle(Timer* timer) {
+    timer->running = !timer->running;
+}
+
+void timer_update(Timer* timer, double dt) {
+    if (timer->running) {
+        timer->elapsed_seconds += dt;
+    }
+}
+
 int main(void) {
     const int screen_width = 1200;
     const int screen_height = 800;
@@ -22,6 +50,8 @@ int main(void) {
     double cam_zoom = 3.0e-9;
 
     bool paused = false;
+    
+    Timer timer = {0};
 
     while (!WindowShouldClose()) {
         const float wheel = GetMouseWheelMove();
@@ -55,25 +85,45 @@ int main(void) {
             }
         }
 
-        const bool step_once = IsKeyPressed(KEY_N);
-        if (!paused) {
-            sim_step(&sim, time_scale * GetFrameTime());
-        } else if (step_once) {
-            sim_step(&sim, time_scale);
+        if (IsKeyPressed(KEY_T)) {
+            timer_toggle(&timer);
         }
+        if (IsKeyPressed(KEY_R)) {
+            timer_reset(&timer);
+        }
+
+        const bool step_once = IsKeyPressed(KEY_N);
+        double sim_dt = 0.0;
+        
+        if (!paused) {
+            sim_dt = time_scale * GetFrameTime();
+            sim_step(&sim, sim_dt);
+        } else if (step_once) {
+            sim_dt = time_scale;
+            sim_step(&sim, sim_dt);
+        }
+
+        timer_update(&timer, sim_dt);
 
         BeginDrawing();
         ClearBackground((Color){10, 12, 20, 255});
 
         sim_draw(&sim, cam_x, cam_y, cam_zoom, screen_width, screen_height);
 
-        DrawRectangle(12, 12, 360, 102, (Color){15, 18, 30, 220});
-        DrawRectangleLines(12, 12, 360, 102, (Color){90, 100, 120, 255});
+        DrawRectangle(12, 12, 360, 130, (Color){15, 18, 30, 220});
+        DrawRectangleLines(12, 12, 360, 130, (Color){90, 100, 120, 255});
 
-        char hud[256];
-        snprintf(hud, sizeof(hud), "Bodies: %zu\nTime: %.2f days\nSpeed: %.0fx\nSpace: pause  N: step", sim.bodies.length, sim.time_seconds / 86400.0, time_scale);
+        char hud[512];
+        snprintf(hud, sizeof(hud), 
+                 "Bodies: %zu\nTime: %.2f days\nSpeed: %.0fx\nTimer: %.2f days %s\nSpace: pause  N: step",
+                 sim.bodies.length, 
+                 sim.time_seconds / 86400.0, 
+                 time_scale,
+                 timer.elapsed_seconds / 86400.0,
+                 timer.running ? "[RUNNING]" : "[PAUSED]");
         DrawText(hud, 24, 22, 16, RAYWHITE);
-        DrawText("+/-: speed  Mouse wheel: zoom  Middle drag: pan", 24, 100, 12, LIGHTGRAY);
+        DrawText("+/-: speed  Mouse wheel: zoom  Middle drag: pan", 24, 114, 12, LIGHTGRAY);
+        DrawText("T: toggle timer  R: reset timer", 24, 128, 12, LIGHTGRAY);
 
         EndDrawing();
     }
