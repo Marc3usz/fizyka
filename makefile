@@ -11,7 +11,7 @@ LIBS = -lm -l:raylibdll.lib -lopengl32 -lgdi32 -lwinmm
 ##################################################################
 
 _DEPS = 
-_OBJ = main.o sim.o arena.o sized_string.o
+_OBJ = main.o sim.o arena.o sized_string.o cli_args.o measurement_tools.o hud.o
 
 ##################################################################
 

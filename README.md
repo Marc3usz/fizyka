@@ -4,12 +4,12 @@ A minimalistic 2D N-body gravity simulator written in C using [Raylib](https://w
 
 ## Features
 
-- **Real-scale Simulation**: Uses real masses and distances (meters, kilograms, G constant).
+- **Real-scale Simulation**: Uses real masses (kg) and stores world space as integer millimeters (`__int128`) for high-precision distances.
 - **Solar System Seed**: Includes Sun, 8 planets, and major moons initialized with elliptical orbits.
-- **Custom Tech Stack**: 
+- **Custom Tech Stack**:
   - Arena allocator for predictable memory usage.
   - Custom dynamic arrays.
-  - Double-precision camera system for zooming from AU scales down to surface details.
+  - `__int128` world coordinates and velocities for large-range, 1 mm precision simulation.
 - **Tools**:
   - Dynamic orbital trails.
   - Waypoints system with distance measurement lines.
@@ -26,7 +26,7 @@ The project uses a standard Makefile and targets Windows (MinGW/GCC).
    make
    ```
 
-*Note: Raylib headers and libraries are included in `./include` and `./lib`.*
+_Note: Raylib headers and libraries are included in `./include` and `./lib`._
 
 ## Running
 
@@ -38,18 +38,19 @@ The project uses a standard Makefile and targets Windows (MinGW/GCC).
 
 ## Controls
 
-| Action | Key / Mouse |
-| :--- | :--- |
-| **Pan Camera** | Middle Mouse Drag |
-| **Zoom** | Mouse Wheel |
-| **Pause / Resume** | `Space` |
+| Action                   | Key / Mouse       |
+| :----------------------- | :---------------- |
+| **Pan Camera**           | Middle Mouse Drag |
+| **Zoom**                 | Mouse Wheel       |
+| **Pause / Resume**       | `Space`           |
 | **Simulate Single Step** | `N` (when paused) |
-| **Increase Speed** | `+` / `Numpad +` |
-| **Decrease Speed** | `-` / `Numpad -` |
-| **Toggle Timer** | `T` |
-| **Reset Timer** | `R` |
+| **Increase Speed**       | `+` / `Numpad +`  |
+| **Decrease Speed**       | `-` / `Numpad -`  |
+| **Toggle Timer**         | `T`               |
+| **Reset Timer**          | `R`               |
 
 ### Measurement Tools
+
 - **Add Waypoint**: `W` (at mouse cursor)
 - **Remove Waypoint**: `E` (hover over waypoint)
 - **Draw Distance Line**: Left Click first point -> Left Click second point
